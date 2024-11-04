@@ -6,6 +6,7 @@ package presentacion;
 
 import dto.UsuarioDTO;
 import java.util.Arrays;
+import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
 import negocio.IUsuarioNegocio;
 import negocio.NegocioException;
@@ -17,11 +18,14 @@ import negocio.UsuarioNegocio;
  */
 public class frmRegistro extends javax.swing.JFrame {
     private IUsuarioNegocio usuarioNegocio;
+    private static EntityManager entityManager;
     /**
      * Creates new form frmRegistro
+     * @param entityManager
      */
-    public frmRegistro() {
+    public frmRegistro(EntityManager entityManager) {
         initComponents();
+        this.entityManager = entityManager;
     }
 
     /**
@@ -183,14 +187,14 @@ public class frmRegistro extends javax.swing.JFrame {
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         // TODO add your handling code here:
         try{
-            usuarioNegocio = new UsuarioNegocio();
+            usuarioNegocio = new UsuarioNegocio(entityManager);
             char[] passwordChars = pswContraseña.getPassword();
-            String contraseña = String.valueOf(passwordChars);
+            String contrasena = String.valueOf(passwordChars);
             
             // Limpiar la matriz de caracteres para seguridad
             Arrays.fill(passwordChars, '\u0000');
             
-            UsuarioDTO usuarioDTO = new UsuarioDTO(txtAlias.getText(), contraseña);
+            UsuarioDTO usuarioDTO = new UsuarioDTO(txtAlias.getText(), contrasena);
             usuarioNegocio.validarRegistro(usuarioDTO);
             JOptionPane.showMessageDialog(this, "Usuario registrado");
             dispose();
@@ -238,7 +242,7 @@ public class frmRegistro extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new frmRegistro().setVisible(true);
+                new frmRegistro(entityManager).setVisible(true);
             }
         });
     }

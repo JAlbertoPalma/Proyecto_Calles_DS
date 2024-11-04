@@ -4,6 +4,7 @@
  */
 package dto;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -11,21 +12,24 @@ import java.util.Random;
  * @author Beto_
  */
 public class UsuarioDTO {
-    private int id;
+    private Long id;
     private String alias;
-    private String contraseña;
-    //Atributos de mapeo
+    private String contrasena;
+    private List<ReporteDTO> reportes;
 
     public UsuarioDTO() {
-        Random random = new Random();
-        this.id = random.nextInt(100);
     }
     
-    public UsuarioDTO(String alias, String contraseña) {
-        Random random = new Random();
-        this.id = random.nextInt(100);
+    public UsuarioDTO(String alias, String contrasena) {
         this.alias = alias;
-        this.contraseña = contraseña;
+        this.contrasena = contrasena;
+    }
+
+    public UsuarioDTO(Long id, String alias, String contrasena, List<ReporteDTO> reportes) {
+        this.id = id;
+        this.alias = alias;
+        this.contrasena = contrasena;
+        this.reportes = reportes;
     }
 
     public String getAlias() {
@@ -36,24 +40,27 @@ public class UsuarioDTO {
         this.alias = alias;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getContrasena() {
+        return contrasena;
     }
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "UsuarioDTO{" + "alias=" + alias + ", contrase\u00f1a=" + contraseña + '}';
+    public List<ReporteDTO> getReportes() {
+        return reportes;
+    }
+
+    public void setReportes(List<ReporteDTO> reportes) {
+        this.reportes = reportes;
     }
 }

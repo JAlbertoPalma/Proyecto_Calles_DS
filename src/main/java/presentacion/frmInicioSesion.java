@@ -4,17 +4,29 @@
  */
 package presentacion;
 
+import dto.UsuarioDTO;
+import java.util.Arrays;
+import javax.persistence.EntityManager;
+import javax.swing.JOptionPane;
+import negocio.IUsuarioNegocio;
+import negocio.NegocioException;
+import negocio.UsuarioNegocio;
+
 /**
  *
  * @author Beto_ And Edgar Ace
  */
 public class frmInicioSesion extends javax.swing.JFrame {
-
+    private static EntityManager entityManager;
+    private UsuarioNegocio usuarioNegocio;
+    private UsuarioDTO usuarioDTO;
     /**
      * Creates new form frmInicioSesion
+     * @param entityManager
      */
-    public frmInicioSesion() {
+    public frmInicioSesion(EntityManager entityManager) {
         initComponents();
+        this.entityManager = entityManager;
     }
 
     /**
@@ -33,10 +45,10 @@ public class frmInicioSesion extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtUsuario1 = new javax.swing.JTextField();
+        txtAlias = new javax.swing.JTextField();
         btnRegistrarse = new javax.swing.JButton();
-        btnEntrar1 = new javax.swing.JButton();
-        pswContraseña = new javax.swing.JPasswordField();
+        btnEntrar = new javax.swing.JButton();
+        pswContrasena = new javax.swing.JPasswordField();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -71,9 +83,9 @@ public class frmInicioSesion extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Alias");
 
-        txtUsuario1.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
-        txtUsuario1.setForeground(new java.awt.Color(204, 204, 204));
-        txtUsuario1.setText("Usuario");
+        txtAlias.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
+        txtAlias.setForeground(new java.awt.Color(204, 204, 204));
+        txtAlias.setText("Usuario");
 
         btnRegistrarse.setBackground(new java.awt.Color(51, 51, 255));
         btnRegistrarse.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
@@ -85,18 +97,18 @@ public class frmInicioSesion extends javax.swing.JFrame {
             }
         });
 
-        btnEntrar1.setBackground(new java.awt.Color(102, 102, 255));
-        btnEntrar1.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
-        btnEntrar1.setForeground(new java.awt.Color(255, 255, 255));
-        btnEntrar1.setText("Entrar");
-        btnEntrar1.addActionListener(new java.awt.event.ActionListener() {
+        btnEntrar.setBackground(new java.awt.Color(102, 102, 255));
+        btnEntrar.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
+        btnEntrar.setForeground(new java.awt.Color(255, 255, 255));
+        btnEntrar.setText("Entrar");
+        btnEntrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEntrar1ActionPerformed(evt);
+                btnEntrarActionPerformed(evt);
             }
         });
 
-        pswContraseña.setFont(new java.awt.Font("Segoe UI Emoji", 0, 14)); // NOI18N
-        pswContraseña.setText("jPasswordField1");
+        pswContrasena.setFont(new java.awt.Font("Segoe UI Emoji", 0, 14)); // NOI18N
+        pswContrasena.setText("jPasswordField1");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -114,13 +126,13 @@ public class frmInicioSesion extends javax.swing.JFrame {
                             .addComponent(jLabel3))
                         .addGap(27, 27, 27)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtUsuario1, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
-                            .addComponent(pswContraseña))))
+                            .addComponent(txtAlias, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
+                            .addComponent(pswContrasena))))
                 .addContainerGap(180, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnEntrar1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnRegistrarse, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(235, 235, 235))
         );
@@ -131,14 +143,14 @@ public class frmInicioSesion extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtUsuario1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtAlias, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addGap(19, 19, 19)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(pswContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pswContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEntrar1)
+                .addComponent(btnEntrar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addComponent(btnRegistrarse)
                 .addContainerGap())
@@ -184,16 +196,28 @@ public class frmInicioSesion extends javax.swing.JFrame {
 
     private void btnRegistrarseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarseActionPerformed
         // TODO add your handling code here:
-        frmRegistro frmRegistro = new frmRegistro();
+        frmRegistro frmRegistro = new frmRegistro(entityManager);
         frmRegistro.setVisible(true);
     }//GEN-LAST:event_btnRegistrarseActionPerformed
 
-    private void btnEntrar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrar1ActionPerformed
+    private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
         // TODO add your handling code here:
-        frmNavegacion frmNavegacion = new frmNavegacion();
-        frmNavegacion.setVisible(true);
-        dispose();
-    }//GEN-LAST:event_btnEntrar1ActionPerformed
+        usuarioNegocio = new UsuarioNegocio(entityManager);
+        char[] passwordChars = pswContrasena.getPassword();
+            String contrasena = String.valueOf(passwordChars);
+            
+            // Limpiar la matriz de caracteres para seguridad
+            Arrays.fill(passwordChars, '\u0000');
+        usuarioDTO = new UsuarioDTO(txtAlias.getText(), contrasena);
+        try{
+            usuarioNegocio.iniciaSesion(usuarioDTO);
+            frmNavegacion frmNavegacion = new frmNavegacion();
+            frmNavegacion.setVisible(true);
+            dispose();
+        }catch(NegocioException ne){
+            JOptionPane.showMessageDialog(this, ne.getMessage());
+        }
+    }//GEN-LAST:event_btnEntrarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -225,13 +249,13 @@ public class frmInicioSesion extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new frmInicioSesion().setVisible(true);
+                new frmInicioSesion(entityManager).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnEntrar1;
+    private javax.swing.JButton btnEntrar;
     private javax.swing.JButton btnRegistrarse;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -240,7 +264,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPasswordField pswContraseña;
-    private javax.swing.JTextField txtUsuario1;
+    private javax.swing.JPasswordField pswContrasena;
+    private javax.swing.JTextField txtAlias;
     // End of variables declaration//GEN-END:variables
 }

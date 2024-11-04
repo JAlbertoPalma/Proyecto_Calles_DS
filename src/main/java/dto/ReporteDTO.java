@@ -5,40 +5,51 @@
 package dto;
 
 import java.time.LocalDate;
-import java.util.Random;
 /**
  *
  * @author Beto_
  */
 public class ReporteDTO {
-    private int id;
+    private Long id;
     private String titulo;
     private String descripcion;
     private LocalDate fecha;
+    private String calle;
     //private ImageIcon imagen;
-    private int likes; //mapeo bd
-    private String calle; //mapeo bd
+    private int likes;
+    private UsuarioDTO usuario;
 
     public ReporteDTO() {
-        Random random = new Random();
-        this.id = random.nextInt(100);
-        this.fecha = LocalDate.now();
     }
 
     public ReporteDTO(String titulo, String calle, String descripcion) {
-        Random random = new Random();
-        this.id = random.nextInt(100);
         this.titulo = titulo;
         this.calle = calle;
         this.descripcion = descripcion;
-        this.fecha = LocalDate.now();
     }
 
-    public int getId() {
+    public ReporteDTO(String titulo, String descripcion, String calle, UsuarioDTO usuario) {
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.calle = calle;
+        this.usuario = usuario;
+    }
+
+    public ReporteDTO(Long id, String titulo, String descripcion, LocalDate fecha, String calle, int likes, UsuarioDTO usuario) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.fecha = fecha;
+        this.calle = calle;
+        this.likes = likes;
+        this.usuario = usuario;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -82,8 +93,11 @@ public class ReporteDTO {
         this.fecha = fecha;
     }
 
-    @Override
-    public String toString() {
-        return "ReporteDTO{" + "id=" + id + ", titulo=" + titulo + ", descripcion=" + descripcion + ", descripcion=" + fecha + ", likes=" + likes + ", calle=" + calle + '}';
+    public UsuarioDTO getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(UsuarioDTO usuario) {
+        this.usuario = usuario;
     }
 }

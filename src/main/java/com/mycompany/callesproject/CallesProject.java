@@ -4,6 +4,9 @@
 
 package com.mycompany.callesproject;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import presentacion.frmInicioSesion;
 
 /**
@@ -14,7 +17,9 @@ public class CallesProject {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
-        frmInicioSesion frmInicioSesion = new frmInicioSesion();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("conexionBD");
+        EntityManager em = emf.createEntityManager();
+        frmInicioSesion frmInicioSesion = new frmInicioSesion(em);
         frmInicioSesion.setVisible(true);
     }
 }

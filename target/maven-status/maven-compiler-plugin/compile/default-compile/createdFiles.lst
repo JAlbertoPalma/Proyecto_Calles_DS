@@ -2,11 +2,15 @@ presentacion\frmNavegacion$1.class
 negocio\IReporteNegocio.class
 persistencia\ReporteDAO.class
 presentacion\frmRegistro$4.class
+entidad\UsuarioEntidad_.class
 presentacion\frmReporte$1.class
 presentacion\frmInicioSesion.class
 presentacion\frmRegistro$2.class
 presentacion\frmReporte$4.class
+entidad\ReporteEntidad_.class
 presentacion\frmInicioSesion$2.class
+negocio\UsuarioCvr.class
+entidad\ReporteEntidad.class
 presentacion\frmReporte.class
 presentacion\frmNavegacion.class
 negocio\UsuarioNegocio.class
@@ -24,9 +28,11 @@ negocio\IUsuarioNegocio.class
 presentacion\frmInicioSesion$3.class
 persistencia\PersistenciaException.class
 persistencia\IReporteDAO.class
+negocio\ReporteCvr.class
 presentacion\frmRegistro$1.class
 presentacion\frmReporte$3.class
 dto\CalleDTO.class
 presentacion\frmNavegacion$2.class
 negocio\ReporteNegocio.class
 presentacion\frmRegistro.class
+entidad\UsuarioEntidad.class
