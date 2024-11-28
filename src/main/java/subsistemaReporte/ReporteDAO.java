@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package persistencia;
+package subsistemaReporte;
 
+import subsistemaUsuario.IUsuarioDAO;
+import subsistemaUsuario.UsuarioDAO;
 import dto.ReporteDTO;
 import entidad.ReporteEntidad;
 import entidad.UsuarioEntidad;
@@ -62,6 +64,8 @@ public class ReporteDAO implements IReporteDAO{
             reporteBuscado.setTitulo(reporteDTO.getTitulo());
             reporteBuscado.setDescripcion(reporteDTO.getDescripcion());
             reporteBuscado.setCalle(reporteDTO.getCalle());
+            reporteBuscado.setFecha(reporteDTO.getFecha());
+            reporteBuscado.setLikes(reporteDTO.getLikes());
             
             entityManager.merge(reporteBuscado);
             entityManager.getTransaction().commit();

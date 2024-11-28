@@ -14,7 +14,6 @@ import presentacion.frmInicioSesion;
  * @author Beto_
  */
 public class CallesProject {
-
     public static void main(String[] args) {
         System.out.println("Hello World!");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("conexionBD");

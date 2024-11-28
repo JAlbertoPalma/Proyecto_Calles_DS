@@ -28,14 +28,14 @@ public class ReporteDTO {
         this.descripcion = descripcion;
     }
 
-    public ReporteDTO(String titulo, String descripcion, String calle, UsuarioDTO usuario) {
+    public ReporteDTO(String titulo, String calle, String descripcion, UsuarioDTO usuario) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.calle = calle;
         this.usuario = usuario;
     }
 
-    public ReporteDTO(Long id, String titulo, String descripcion, LocalDate fecha, String calle, int likes, UsuarioDTO usuario) {
+    public ReporteDTO(Long id, String titulo, String calle, String descripcion, LocalDate fecha, int likes, UsuarioDTO usuario) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -99,5 +99,10 @@ public class ReporteDTO {
 
     public void setUsuario(UsuarioDTO usuario) {
         this.usuario = usuario;
+    }
+
+    @Override
+    public String toString() {
+        return "ReporteDTO{" + "id=" + id + ", titulo=" + titulo + ", descripcion=" + descripcion + ", fecha=" + fecha + ", calle=" + calle + ", likes=" + likes + ", usuario=" + usuario + '}';
     }
 }

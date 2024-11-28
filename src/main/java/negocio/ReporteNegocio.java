@@ -5,26 +5,31 @@
 package negocio;
 
 import dto.ReporteDTO;
+import entidad.ReporteEntidad;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
-import persistencia.IReporteDAO;
-import persistencia.IUsuarioDAO;
-import persistencia.PersistenciaException;
-import persistencia.ReporteDAO;
-import persistencia.UsuarioDAO;
+import subsistemaReporte.IReporteDAO;
+import subsistemaUsuario.IUsuarioDAO;
+import subsistemaReporte.PersistenciaException;
+import subsistemaReporte.ReporteDAO;
+import subsistemaUsuario.UsuarioDAO;
 
 /**
  *
  * @author Beto_
  */
 public class ReporteNegocio implements IReporteNegocio{
-    EntityManager entityManager;
+//    EntityManager entityManager;
     IReporteDAO reporteDAO;
-    IUsuarioDAO usuarioDAO;
+    private ReporteCvr reporteCvr;
+//    IUsuarioDAO usuarioDAO;
 
-    public ReporteNegocio(EntityManager entityManager, Long id) {
-        this.entityManager = entityManager;
+    public ReporteNegocio(EntityManager entityManager) {
+//        this.entityManager = entityManager;
         reporteDAO = new ReporteDAO(entityManager);
-        usuarioDAO = new UsuarioDAO(entityManager);
+        this.reporteCvr = new ReporteCvr();
+//        usuarioDAO = new UsuarioDAO(entityManager);
     }
 
     @Override
@@ -41,6 +46,37 @@ public class ReporteNegocio implements IReporteNegocio{
         if (reporteDTO.getCalle() == null || reporteDTO.getCalle().isEmpty()) {
             throw new NegocioException("La calle del reporte es obligatoria.");
         }
+        try{
+            //Alias repetido
+            reporteDAO.guardar(reporteDTO, reporteDTO.getUsuario().getId());
+        }catch(PersistenciaException pe){
+            throw new NegocioException("Error en la capa persistencia :" + pe.getMessage());
+        }        
     }
     
+    @Override
+    public List<ReporteDTO> obtenerReportes() throws NegocioException{
+        try{
+            return reporteCvr.convListaDTO(reporteDAO.obtenerReportes());
+        }catch(PersistenciaException pe){
+            throw new NegocioException("Error en la capa persistencia :" + pe.getMessage());
+        }
+    }
+
+    @Override
+    public int likearReporte(ReporteDTO reporteDTO, boolean like) throws NegocioException {
+        try{
+            if(!like){
+                reporteDTO.setLikes(reporteDTO.getLikes() + 1);
+                reporteDAO.actualizar(reporteDTO.getId(), reporteDTO);
+            }
+            else if(like && reporteDTO.getLikes() > 0){
+                reporteDTO.setLikes(reporteDTO.getLikes() - 1);
+                reporteDAO.actualizar(reporteDTO.getId(), reporteDTO);
+            }
+            return reporteDTO.getLikes();
+        }catch(PersistenciaException pe){
+            throw new NegocioException("Error en la capa persistencia: " + pe.getMessage());
+        }
+    }
 }

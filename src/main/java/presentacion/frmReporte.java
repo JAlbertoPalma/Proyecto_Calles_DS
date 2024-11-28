@@ -7,6 +7,7 @@ package presentacion;
 import dto.*;
 import java.awt.HeadlessException;
 import java.util.Arrays;
+import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
 import negocio.IReporteNegocio;
 import negocio.NegocioException;
@@ -18,19 +19,16 @@ import negocio.UsuarioNegocio;
  * @author Beto_  And Edgar
  */
 public class frmReporte extends javax.swing.JFrame {
-    IReporteNegocio reporteNegocio;
+    private IReporteNegocio reporteNegocio;
+    private static EntityManager entityManager;
     /**
      * Creates new form frmReporte
+     * @param entityManager
      */
-    public frmReporte() {
+    public frmReporte(EntityManager entityManager) {
         initComponents();
-        
+        this.entityManager = entityManager;
     }
-//    //No me acuerdo de como era el codigo por razones obvias ._. 
-//    public frmReporte(UsuarioDTO usuario, CalleDTO calle) throws HeadlessException {
-//        this.usuario = usuario;
-//        this.calle = calle;
-//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -48,12 +46,12 @@ public class frmReporte extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txtTitulo = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtCalle = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescripcion = new javax.swing.JTextArea();
         btnCancelar = new javax.swing.JButton();
         btnPublicar = new javax.swing.JButton();
+        cbxCalle = new javax.swing.JComboBox<>();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Black", 0, 48)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -77,24 +75,18 @@ public class frmReporte extends javax.swing.JFrame {
         jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(93, 89, -1, -1));
 
         txtTitulo.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
-        txtTitulo.setForeground(new java.awt.Color(204, 204, 204));
         txtTitulo.setText("Titulo");
+        txtTitulo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtTituloActionPerformed(evt);
+            }
+        });
         jPanel2.add(txtTitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 78, 309, 44));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Calle");
         jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(93, 150, -1, -1));
-
-        txtCalle.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
-        txtCalle.setForeground(new java.awt.Color(204, 204, 204));
-        txtCalle.setText("Calle");
-        txtCalle.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCalleActionPerformed(evt);
-            }
-        });
-        jPanel2.add(txtCalle, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 139, 309, 44));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
@@ -103,7 +95,6 @@ public class frmReporte extends javax.swing.JFrame {
 
         txtDescripcion.setColumns(20);
         txtDescripcion.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
-        txtDescripcion.setForeground(new java.awt.Color(204, 204, 204));
         txtDescripcion.setRows(5);
         txtDescripcion.setText("Descripcion del problema");
         jScrollPane1.setViewportView(txtDescripcion);
@@ -131,6 +122,14 @@ public class frmReporte extends javax.swing.JFrame {
             }
         });
         jPanel2.add(btnPublicar, new org.netbeans.lib.awtextra.AbsoluteConstraints(465, 438, 215, -1));
+
+        cbxCalle.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Guerrero", "Miguel Aleman", "Kino", "200" }));
+        cbxCalle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxCalleActionPerformed(evt);
+            }
+        });
+        jPanel2.add(cbxCalle, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 150, 310, 40));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -169,13 +168,9 @@ public class frmReporte extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtCalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCalleActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCalleActionPerformed
-
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         // TODO add your handling code here:
-        frmNavegacion frmNavegacion = new frmNavegacion();
+        frmNavegacion frmNavegacion = new frmNavegacion(entityManager);
         frmNavegacion.setVisible(true);
         dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
@@ -183,19 +178,26 @@ public class frmReporte extends javax.swing.JFrame {
     private void btnPublicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPublicarActionPerformed
         // TODO add your handling code here:
         try{
-            reporteNegocio = new ReporteNegocio();
-            
-            ReporteDTO reporteDTO = new ReporteDTO(txtTitulo.getText(), txtCalle.getText(), txtDescripcion.getText());
+            reporteNegocio = new ReporteNegocio(entityManager);
+            ReporteDTO reporteDTO = new ReporteDTO(txtTitulo.getText(), cbxCalle.getSelectedItem().toString(), txtDescripcion.getText(), frmInicioSesion.usuarioSesion);
             reporteNegocio.validarCampos(reporteDTO);
             frmNavegacion.reportes.add(reporteDTO.toString());
             JOptionPane.showMessageDialog(this, "Reporte publicado");
-            frmNavegacion frmNavegacion = new frmNavegacion();
+            frmNavegacion frmNavegacion = new frmNavegacion(entityManager);
             frmNavegacion.setVisible(true);
             dispose();
         }catch(NegocioException ne){
             JOptionPane.showMessageDialog(this, ne.getMessage());
         }
     }//GEN-LAST:event_btnPublicarActionPerformed
+
+    private void cbxCalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxCalleActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxCalleActionPerformed
+
+    private void txtTituloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTituloActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTituloActionPerformed
 
     /**
      * @param args the command line arguments
@@ -227,7 +229,7 @@ public class frmReporte extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new frmReporte().setVisible(true);
+                new frmReporte(entityManager).setVisible(true);
             }
         });
     }
@@ -235,6 +237,7 @@ public class frmReporte extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnPublicar;
+    private javax.swing.JComboBox<String> cbxCalle;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -243,7 +246,6 @@ public class frmReporte extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField txtCalle;
     private javax.swing.JTextArea txtDescripcion;
     private javax.swing.JTextField txtTitulo;
     // End of variables declaration//GEN-END:variables

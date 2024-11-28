@@ -5,10 +5,11 @@
 package negocio;
 
 import dto.UsuarioDTO;
+import entidad.UsuarioEntidad;
 import javax.persistence.EntityManager;
-import persistencia.IUsuarioDAO;
-import persistencia.PersistenciaException;
-import persistencia.UsuarioDAO;
+import subsistemaUsuario.IUsuarioDAO;
+import subsistemaReporte.PersistenciaException;
+import subsistemaUsuario.UsuarioDAO;
 
 /**
  *
@@ -64,7 +65,11 @@ public class UsuarioNegocio implements IUsuarioNegocio{
         
         //obtener alias
         try{
-            UsuarioDTO usuarioAux = usuarioCvr.convDTO(usuarioDAO.obtenerPorAlias(usuarioDTO.getAlias()));
+            UsuarioEntidad usuarioEntidadAux = usuarioDAO.obtenerPorAlias(usuarioDTO.getAlias());
+            if(usuarioEntidadAux == null){
+                throw new NegocioException("No se encontró ningun usuario con este alias.");
+            }
+            UsuarioDTO usuarioAux = usuarioCvr.convDTO(usuarioEntidadAux);
             //extraer contraseña
             String contrasenaAlias = usuarioAux.getContrasena();
             
@@ -74,6 +79,20 @@ public class UsuarioNegocio implements IUsuarioNegocio{
             }
         }catch(PersistenciaException pe){
             throw new NegocioException("Error en capa persistencia: " + pe.getMessage());
+        }
+    }
+
+    @Override
+    public UsuarioDTO obtenerUsuarioSesion(String alias) throws NegocioException {
+        try{
+            UsuarioEntidad usuarioEntidadAux = usuarioDAO.obtenerPorAlias(alias);
+            if(usuarioEntidadAux == null){
+                throw new NegocioException("No se encontró ningun usuario con este alias.");
+            }
+            UsuarioDTO usuarioAux = usuarioCvr.convDTO(usuarioEntidadAux);
+            return usuarioAux;
+        }catch(PersistenciaException pe){
+            throw new NegocioException("Error en la capa persistencia: " + pe.getMessage());
         }
     }
     

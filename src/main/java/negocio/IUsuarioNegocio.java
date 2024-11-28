@@ -14,4 +14,6 @@ public interface IUsuarioNegocio {
     public void validarRegistro(UsuarioDTO usuarioDTO) throws NegocioException;
     
     public void iniciaSesion(UsuarioDTO usuarioDTO) throws NegocioException;
+    
+    public UsuarioDTO obtenerUsuarioSesion(String alias) throws NegocioException;
 }

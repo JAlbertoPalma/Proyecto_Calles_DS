@@ -5,6 +5,7 @@
 package negocio;
 
 import dto.ReporteDTO;
+import java.util.List;
 
 /**
  *
@@ -12,4 +13,8 @@ import dto.ReporteDTO;
  */
 public interface IReporteNegocio {
     public void validarCampos(ReporteDTO reporteDTO) throws NegocioException;
+    
+    public List<ReporteDTO> obtenerReportes() throws NegocioException;
+    
+    public int likearReporte(ReporteDTO reporteDTO, boolean like) throws NegocioException;
 }

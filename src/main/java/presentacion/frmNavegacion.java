@@ -4,28 +4,39 @@
  */
 package presentacion;
 
+import dto.ReporteDTO;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import javax.persistence.EntityManager;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import negocio.IReporteNegocio;
+import negocio.NegocioException;
+import negocio.ReporteNegocio;
 
 /**
  *
  * @author Beto_
  */
 public class frmNavegacion extends javax.swing.JFrame {
+    private static EntityManager entityManager;
+    private IReporteNegocio reporteNegocio;
     static List<String> reportes = new ArrayList();
     /**
      * Creates new form frmNavegacion
+     * @param entityManager
      */
-    public frmNavegacion() {
+    public frmNavegacion(EntityManager entityManager) {
         initComponents();
-        if(!reportes.isEmpty()){
-            // Agregar las cadenas al JTextArea, separadas por nuevas líneas
-            StringBuilder sb = new StringBuilder();
-            for (String cadena : reportes) {
-                sb.append(cadena).append("\n");
-            }
-            textArea.setText(sb.toString());
-        }
+        this.entityManager = entityManager;
+        llenarPaneles();
     }
 
     /**
@@ -37,22 +48,22 @@ public class frmNavegacion extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        textArea = new javax.swing.JTextArea();
+        pnl1 = new javax.swing.JPanel();
+        pnl2 = new javax.swing.JPanel();
         btnOpcionReporte = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        btnOpcionReporte1 = new javax.swing.JButton();
+        scrPanel = new javax.swing.JScrollPane();
+        pnlPrincipal = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(860, 500));
 
-        jPanel1.setBackground(new java.awt.Color(204, 204, 255));
+        pnl1.setBackground(new java.awt.Color(204, 204, 255));
+        pnl1.setPreferredSize(new java.awt.Dimension(830, 440));
 
-        jPanel2.setBackground(new java.awt.Color(102, 153, 255));
-
-        textArea.setColumns(20);
-        textArea.setRows(5);
-        jScrollPane1.setViewportView(textArea);
+        pnl2.setBackground(new java.awt.Color(102, 153, 255));
+        pnl2.setPreferredSize(new java.awt.Dimension(800, 420));
 
         btnOpcionReporte.setText("Crear reporte");
         btnOpcionReporte.addActionListener(new java.awt.event.ActionListener() {
@@ -65,54 +76,76 @@ public class frmNavegacion extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Navegación");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(310, 310, 310)
-                .addComponent(jLabel1)
-                .addContainerGap(330, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnOpcionReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(35, 35, 35)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 708, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(36, Short.MAX_VALUE)))
+        btnOpcionReporte1.setText("Cerrar sesión");
+        btnOpcionReporte1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOpcionReporte1ActionPerformed(evt);
+            }
+        });
+
+        scrPanel.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
+        pnlPrincipal.setLayout(pnlPrincipalLayout);
+        pnlPrincipalLayout.setHorizontalGroup(
+            pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 265, Short.MAX_VALUE)
-                .addComponent(btnOpcionReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(72, 72, 72)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(72, Short.MAX_VALUE)))
+        pnlPrincipalLayout.setVerticalGroup(
+            pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 318, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        scrPanel.setViewportView(pnlPrincipal);
+
+        javax.swing.GroupLayout pnl2Layout = new javax.swing.GroupLayout(pnl2);
+        pnl2.setLayout(pnl2Layout);
+        pnl2Layout.setHorizontalGroup(
+            pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl2Layout.createSequentialGroup()
+                .addGap(310, 310, 310)
+                .addComponent(jLabel1)
+                .addContainerGap(361, Short.MAX_VALUE))
+            .addGroup(pnl2Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(btnOpcionReporte1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnOpcionReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(scrPanel)
+                .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+        pnl2Layout.setVerticalGroup(
+            pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scrPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnOpcionReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnOpcionReporte1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout pnl1Layout = new javax.swing.GroupLayout(pnl1);
+        pnl1.setLayout(pnl1Layout);
+        pnl1Layout.setHorizontalGroup(
+            pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnl2, javax.swing.GroupLayout.PREFERRED_SIZE, 810, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(22, Short.MAX_VALUE))
+        );
+        pnl1Layout.setVerticalGroup(
+            pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnl2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -121,14 +154,14 @@ public class frmNavegacion extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(36, 36, 36))
+                .addComponent(pnl1, javax.swing.GroupLayout.DEFAULT_SIZE, 838, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnl1, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -138,11 +171,86 @@ public class frmNavegacion extends javax.swing.JFrame {
 
     private void btnOpcionReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpcionReporteActionPerformed
         // TODO add your handling code here:
-        frmReporte frmReporte = new frmReporte();
+        frmReporte frmReporte = new frmReporte(entityManager);
         frmReporte.setVisible(true);
         dispose();
     }//GEN-LAST:event_btnOpcionReporteActionPerformed
 
+    private void btnOpcionReporte1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpcionReporte1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnOpcionReporte1ActionPerformed
+
+    private void llenarPaneles(){
+        AtomicBoolean like = new AtomicBoolean(false);
+        reporteNegocio = new ReporteNegocio(entityManager);
+        List<ReporteDTO> reportesDTO = new ArrayList<>();
+
+        // Obtenemos los reportes
+        try {
+            reportesDTO = reporteNegocio.obtenerReportes();
+        } catch (NegocioException ne) {
+            JOptionPane.showMessageDialog(this, ne.getMessage());
+        }
+
+        // Limpiar pnlPrincipal antes de agregar nuevos componentes
+        pnlPrincipal.removeAll();
+        pnlPrincipal.setLayout(new BoxLayout(pnlPrincipal, BoxLayout.Y_AXIS));
+
+        // Crear panel dinámico para cada reporte
+        for (ReporteDTO reporteDTO : reportesDTO) {
+            JPanel panelReporte = new JPanel();
+            panelReporte.setBorder(BorderFactory.createTitledBorder(reporteDTO.getTitulo()));
+            panelReporte.setLayout(new GridLayout(3, 1));
+
+            JLabel lblFecha = new JLabel("Fecha: " + reporteDTO.getFecha());
+            JLabel lblDescripcion = new JLabel("<html>" + reporteDTO.getDescripcion() + "</html>"); // HTML para texto largo
+            JLabel lblLikes = new JLabel("Likes: " + reporteDTO.getLikes());
+
+            JButton btnLike = new JButton("Like");
+            btnLike.addActionListener(e -> {
+                System.out.println("Botón Like presionado para: " + reporteDTO.getTitulo() + ". Estado: " + like.get());
+                lblLikes.setText("Likes: " + String.valueOf(incrementarLikes(reporteDTO, like.get())));
+                
+                lblLikes.revalidate();
+                lblLikes.repaint();
+                
+                if(!like.get()){
+                    like.set(true);
+                }else if(like.get()){
+                    like.set(false);
+                }
+                System.out.println("Valor actual like: " + reporteDTO.getTitulo() + ". Estado: " + like.get());
+            });
+            
+
+            // Agregar componentes al panel de cada reporte
+            panelReporte.add(lblFecha);
+            panelReporte.add(lblDescripcion);
+
+            JPanel likePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            likePanel.add(lblLikes);
+            likePanel.add(btnLike);
+
+            panelReporte.add(likePanel);
+            pnlPrincipal.add(panelReporte);
+        }
+        
+        // Asegurarse de actualizar el panel
+        pnlPrincipal.revalidate();
+        pnlPrincipal.repaint();
+    }
+    
+    public int incrementarLikes(ReporteDTO reporteDTO, boolean like){
+        reporteNegocio = new ReporteNegocio(entityManager);
+        
+        try{
+            return reporteNegocio.likearReporte(reporteDTO, like);
+        }catch(NegocioException ne){
+            JOptionPane.showMessageDialog(this, "Error");
+        }
+        return reporteDTO.getLikes();
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -173,17 +281,27 @@ public class frmNavegacion extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new frmNavegacion().setVisible(true);
+                new frmNavegacion(entityManager).setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOpcionReporte;
+    private javax.swing.JButton btnOpcionReporte1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea textArea;
+    private javax.swing.JPanel pnl1;
+    private javax.swing.JPanel pnl2;
+    private javax.swing.JPanel pnlPrincipal;
+    private javax.swing.JScrollPane scrPanel;
     // End of variables declaration//GEN-END:variables
+
+//        if(!reportes.isEmpty()){
+//            // Agregar las cadenas al JTextArea, separadas por nuevas líneas
+//            StringBuilder sb = new StringBuilder();
+//            for (String cadena : reportes) {
+//                sb.append(cadena).append("\n");
+//            }
+//            textArea.setText(sb.toString());
+//        }
 }

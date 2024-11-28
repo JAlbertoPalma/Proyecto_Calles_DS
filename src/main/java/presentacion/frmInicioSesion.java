@@ -20,12 +20,15 @@ public class frmInicioSesion extends javax.swing.JFrame {
     private static EntityManager entityManager;
     private UsuarioNegocio usuarioNegocio;
     private UsuarioDTO usuarioDTO;
+    static UsuarioDTO usuarioSesion;
+    
     /**
      * Creates new form frmInicioSesion
      * @param entityManager
      */
     public frmInicioSesion(EntityManager entityManager) {
         initComponents();
+        usuarioSesion = null;
         this.entityManager = entityManager;
     }
 
@@ -84,8 +87,11 @@ public class frmInicioSesion extends javax.swing.JFrame {
         jLabel3.setText("Alias");
 
         txtAlias.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
-        txtAlias.setForeground(new java.awt.Color(204, 204, 204));
-        txtAlias.setText("Usuario");
+        txtAlias.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtAliasActionPerformed(evt);
+            }
+        });
 
         btnRegistrarse.setBackground(new java.awt.Color(51, 51, 255));
         btnRegistrarse.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
@@ -108,7 +114,6 @@ public class frmInicioSesion extends javax.swing.JFrame {
         });
 
         pswContrasena.setFont(new java.awt.Font("Segoe UI Emoji", 0, 14)); // NOI18N
-        pswContrasena.setText("jPasswordField1");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -211,13 +216,18 @@ public class frmInicioSesion extends javax.swing.JFrame {
         usuarioDTO = new UsuarioDTO(txtAlias.getText(), contrasena);
         try{
             usuarioNegocio.iniciaSesion(usuarioDTO);
-            frmNavegacion frmNavegacion = new frmNavegacion();
-            frmNavegacion.setVisible(true);
+            usuarioSesion = usuarioNegocio.obtenerUsuarioSesion(txtAlias.getText());
+            frmNavegacion frmNavegacion = new frmNavegacion(entityManager);
             dispose();
+            frmNavegacion.setVisible(true);
         }catch(NegocioException ne){
             JOptionPane.showMessageDialog(this, ne.getMessage());
         }
     }//GEN-LAST:event_btnEntrarActionPerformed
+
+    private void txtAliasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAliasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAliasActionPerformed
 
     /**
      * @param args the command line arguments

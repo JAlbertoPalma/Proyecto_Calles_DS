@@ -52,7 +52,7 @@ public class ReporteEntidad implements Serializable {
         this.likes = 0;
     }
 
-    public ReporteEntidad(String titulo, String descripcion, String calle, UsuarioEntidad usuario) {
+    public ReporteEntidad(String titulo, String calle, String descripcion, UsuarioEntidad usuario) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.usuario = usuario;
