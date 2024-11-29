@@ -5,6 +5,7 @@
 package presentacion;
 
 import dto.ReporteDTO;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -48,33 +49,42 @@ public class frmNavegacion extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
         pnl1 = new javax.swing.JPanel();
         pnl2 = new javax.swing.JPanel();
-        btnOpcionReporte = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        btnOpcionReporte1 = new javax.swing.JButton();
         scrPanel = new javax.swing.JScrollPane();
         pnlPrincipal = new javax.swing.JPanel();
+        btnOpcionReporte1 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        btnOpcionReporte = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(860, 500));
+        setPreferredSize(new java.awt.Dimension(850, 500));
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(800, 420));
 
         pnl1.setBackground(new java.awt.Color(204, 204, 255));
-        pnl1.setPreferredSize(new java.awt.Dimension(830, 440));
+        pnl1.setPreferredSize(new java.awt.Dimension(800, 450));
 
         pnl2.setBackground(new java.awt.Color(102, 153, 255));
         pnl2.setPreferredSize(new java.awt.Dimension(800, 420));
 
-        btnOpcionReporte.setText("Crear reporte");
-        btnOpcionReporte.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOpcionReporteActionPerformed(evt);
-            }
-        });
+        scrPanel.setPreferredSize(new java.awt.Dimension(750, 350));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Navegación");
+        pnlPrincipal.setPreferredSize(new java.awt.Dimension(750, 350));
+
+        javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
+        pnlPrincipal.setLayout(pnlPrincipalLayout);
+        pnlPrincipalLayout.setHorizontalGroup(
+            pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 750, Short.MAX_VALUE)
+        );
+        pnlPrincipalLayout.setVerticalGroup(
+            pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 350, Short.MAX_VALUE)
+        );
+
+        scrPanel.setViewportView(pnlPrincipal);
 
         btnOpcionReporte1.setText("Cerrar sesión");
         btnOpcionReporte1.addActionListener(new java.awt.event.ActionListener() {
@@ -83,51 +93,44 @@ public class frmNavegacion extends javax.swing.JFrame {
             }
         });
 
-        scrPanel.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jLabel1.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Navegación");
 
-        javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
-        pnlPrincipal.setLayout(pnlPrincipalLayout);
-        pnlPrincipalLayout.setHorizontalGroup(
-            pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        pnlPrincipalLayout.setVerticalGroup(
-            pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 318, Short.MAX_VALUE)
-        );
-
-        scrPanel.setViewportView(pnlPrincipal);
+        btnOpcionReporte.setText("Crear reporte");
+        btnOpcionReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOpcionReporteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnl2Layout = new javax.swing.GroupLayout(pnl2);
         pnl2.setLayout(pnl2Layout);
         pnl2Layout.setHorizontalGroup(
             pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(scrPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+                .addContainerGap())
             .addGroup(pnl2Layout.createSequentialGroup()
-                .addGap(310, 310, 310)
-                .addComponent(jLabel1)
-                .addContainerGap(361, Short.MAX_VALUE))
-            .addGroup(pnl2Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGap(24, 24, 24)
                 .addComponent(btnOpcionReporte1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(175, 175, 175)
+                .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnOpcionReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(scrPanel)
-                .addContainerGap())
         );
         pnl2Layout.setVerticalGroup(
             pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnOpcionReporte1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(btnOpcionReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addComponent(scrPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnOpcionReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnOpcionReporte1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -136,17 +139,19 @@ public class frmNavegacion extends javax.swing.JFrame {
         pnl1Layout.setHorizontalGroup(
             pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnl2, javax.swing.GroupLayout.PREFERRED_SIZE, 810, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addGap(15, 15, 15)
+                .addComponent(pnl2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         pnl1Layout.setVerticalGroup(
             pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(pnl2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
+
+        jScrollPane1.setViewportView(pnl1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -154,14 +159,14 @@ public class frmNavegacion extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnl1, javax.swing.GroupLayout.DEFAULT_SIZE, 838, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnl1, javax.swing.GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -200,31 +205,25 @@ public class frmNavegacion extends javax.swing.JFrame {
         for (ReporteDTO reporteDTO : reportesDTO) {
             JPanel panelReporte = new JPanel();
             panelReporte.setBorder(BorderFactory.createTitledBorder(reporteDTO.getTitulo()));
-            panelReporte.setLayout(new GridLayout(3, 1));
+            panelReporte.setLayout(new GridLayout(4, 1)); // Cambiar a 4 filas si hay más componentes
 
             JLabel lblFecha = new JLabel("Fecha: " + reporteDTO.getFecha());
-            JLabel lblDescripcion = new JLabel("<html>" + reporteDTO.getDescripcion() + "</html>"); // HTML para texto largo
+            JLabel lblCalle = new JLabel("Calle: " + reporteDTO.getCalle());
+            JLabel lblDescripcion = new JLabel("<html>" + reporteDTO.getDescripcion() + "</html>");
             JLabel lblLikes = new JLabel("Likes: " + reporteDTO.getLikes());
 
             JButton btnLike = new JButton("Like");
             btnLike.addActionListener(e -> {
-                System.out.println("Botón Like presionado para: " + reporteDTO.getTitulo() + ". Estado: " + like.get());
-                lblLikes.setText("Likes: " + String.valueOf(incrementarLikes(reporteDTO, like.get())));
-                
+                lblLikes.setText("Likes: " + incrementarLikes(reporteDTO, like.get()));
                 lblLikes.revalidate();
                 lblLikes.repaint();
-                
-                if(!like.get()){
-                    like.set(true);
-                }else if(like.get()){
-                    like.set(false);
-                }
-                System.out.println("Valor actual like: " + reporteDTO.getTitulo() + ". Estado: " + like.get());
+
+                like.set(!like.get());
             });
-            
 
             // Agregar componentes al panel de cada reporte
             panelReporte.add(lblFecha);
+            panelReporte.add(lblCalle);
             panelReporte.add(lblDescripcion);
 
             JPanel likePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -234,10 +233,13 @@ public class frmNavegacion extends javax.swing.JFrame {
             panelReporte.add(likePanel);
             pnlPrincipal.add(panelReporte);
         }
-        
-        // Asegurarse de actualizar el panel
-        pnlPrincipal.revalidate();
-        pnlPrincipal.repaint();
+
+        // Ajustar tamaño preferido de pnlPrincipal dinámicamente
+        pnlPrincipal.setPreferredSize(new Dimension(scrPanel.getWidth(), reportesDTO.size() * 200));
+
+        // Asegurarse de actualizar el JScrollPane
+        scrPanel.revalidate();
+        scrPanel.repaint();
     }
     
     public int incrementarLikes(ReporteDTO reporteDTO, boolean like){
@@ -290,6 +292,7 @@ public class frmNavegacion extends javax.swing.JFrame {
     private javax.swing.JButton btnOpcionReporte;
     private javax.swing.JButton btnOpcionReporte1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnl1;
     private javax.swing.JPanel pnl2;
     private javax.swing.JPanel pnlPrincipal;

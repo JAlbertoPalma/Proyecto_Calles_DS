@@ -18,7 +18,7 @@ import negocio.UsuarioNegocio;
  */
 public class frmInicioSesion extends javax.swing.JFrame {
     private static EntityManager entityManager;
-    private UsuarioNegocio usuarioNegocio;
+    private IUsuarioNegocio usuarioNegocio;
     private UsuarioDTO usuarioDTO;
     static UsuarioDTO usuarioSesion;
     
@@ -87,6 +87,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
         jLabel3.setText("Alias");
 
         txtAlias.setFont(new java.awt.Font("Segoe UI Emoji", 0, 18)); // NOI18N
+        txtAlias.setText("macario");
         txtAlias.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtAliasActionPerformed(evt);

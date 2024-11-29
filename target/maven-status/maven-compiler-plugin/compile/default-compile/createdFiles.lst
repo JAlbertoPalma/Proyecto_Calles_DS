@@ -3,6 +3,7 @@ negocio\IReporteNegocio.class
 presentacion\frmRegistro$4.class
 entidad\UsuarioEntidad_.class
 negocio\FachadaUsuario.class
+infraestructura\OverPassCalles.class
 presentacion\frmReporte$1.class
 presentacion\frmInicioSesion.class
 presentacion\frmRegistro$2.class

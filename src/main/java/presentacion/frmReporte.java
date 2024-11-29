@@ -5,7 +5,9 @@
 package presentacion;
 
 import dto.*;
+import infraestructura.OverPassCalles;
 import java.awt.HeadlessException;
+import java.io.IOException;
 import java.util.Arrays;
 import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
@@ -21,6 +23,7 @@ import negocio.UsuarioNegocio;
 public class frmReporte extends javax.swing.JFrame {
     private IReporteNegocio reporteNegocio;
     private static EntityManager entityManager;
+    private OverPassCalles overPass;
     /**
      * Creates new form frmReporte
      * @param entityManager
@@ -28,6 +31,7 @@ public class frmReporte extends javax.swing.JFrame {
     public frmReporte(EntityManager entityManager) {
         initComponents();
         this.entityManager = entityManager;
+        llenarComboBox();
     }
 
     /**
@@ -51,7 +55,7 @@ public class frmReporte extends javax.swing.JFrame {
         txtDescripcion = new javax.swing.JTextArea();
         btnCancelar = new javax.swing.JButton();
         btnPublicar = new javax.swing.JButton();
-        cbxCalle = new javax.swing.JComboBox<>();
+        cbxCalles = new javax.swing.JComboBox<>();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Black", 0, 48)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -123,13 +127,13 @@ public class frmReporte extends javax.swing.JFrame {
         });
         jPanel2.add(btnPublicar, new org.netbeans.lib.awtextra.AbsoluteConstraints(465, 438, 215, -1));
 
-        cbxCalle.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Guerrero", "Miguel Aleman", "Kino", "200" }));
-        cbxCalle.addActionListener(new java.awt.event.ActionListener() {
+        cbxCalles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Guerrero", "Miguel Aleman", "Kino", "200" }));
+        cbxCalles.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbxCalleActionPerformed(evt);
+                cbxCallesActionPerformed(evt);
             }
         });
-        jPanel2.add(cbxCalle, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 150, 310, 40));
+        jPanel2.add(cbxCalles, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 150, 310, 40));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -179,7 +183,7 @@ public class frmReporte extends javax.swing.JFrame {
         // TODO add your handling code here:
         try{
             reporteNegocio = new ReporteNegocio(entityManager);
-            ReporteDTO reporteDTO = new ReporteDTO(txtTitulo.getText(), cbxCalle.getSelectedItem().toString(), txtDescripcion.getText(), frmInicioSesion.usuarioSesion);
+            ReporteDTO reporteDTO = new ReporteDTO(txtTitulo.getText(), cbxCalles.getSelectedItem().toString(), txtDescripcion.getText(), frmInicioSesion.usuarioSesion);
             reporteNegocio.validarCampos(reporteDTO);
             frmNavegacion.reportes.add(reporteDTO.toString());
             JOptionPane.showMessageDialog(this, "Reporte publicado");
@@ -191,14 +195,38 @@ public class frmReporte extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnPublicarActionPerformed
 
-    private void cbxCalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxCalleActionPerformed
+    private void cbxCallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxCallesActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_cbxCalleActionPerformed
+    }//GEN-LAST:event_cbxCallesActionPerformed
 
     private void txtTituloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTituloActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTituloActionPerformed
-
+    
+    public void llenarComboBox(){
+        overPass = new OverPassCalles();
+        double[] coordenadas = {27.4826, -109.9516, 27.5126, -109.9216};
+        
+        // Limpiar el comboBox antes de llenarlo
+        cbxCalles.removeAllItems();
+        
+        try{
+            //Guardar las calles en un arreglo
+            String[] calles = overPass.obtenerCalles(coordenadas);
+            
+            //Guardar las calles obtenidas en la comboBox
+            if (calles != null) {
+                System.out.println("Calles de hermosillo:");
+                for (String calle : calles) {
+                    cbxCalles.addItem(calle);
+                }
+            } else {
+                System.out.println("No se pudieron obtener las calles.");
+            }
+        } catch (IOException | InterruptedException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -237,7 +265,7 @@ public class frmReporte extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnPublicar;
-    private javax.swing.JComboBox<String> cbxCalle;
+    private javax.swing.JComboBox<String> cbxCalles;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
