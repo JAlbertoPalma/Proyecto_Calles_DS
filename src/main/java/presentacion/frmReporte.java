@@ -5,7 +5,6 @@
 package presentacion;
 
 import dto.*;
-import infraestructura.OverPassCalles;
 import java.awt.HeadlessException;
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,7 +22,6 @@ import negocio.UsuarioNegocio;
 public class frmReporte extends javax.swing.JFrame {
     private IReporteNegocio reporteNegocio;
     private static EntityManager entityManager;
-    private OverPassCalles overPass;
     /**
      * Creates new form frmReporte
      * @param entityManager
@@ -31,6 +29,7 @@ public class frmReporte extends javax.swing.JFrame {
     public frmReporte(EntityManager entityManager) {
         initComponents();
         this.entityManager = entityManager;
+        this.reporteNegocio = new ReporteNegocio(entityManager);
         llenarComboBox();
     }
 
@@ -56,6 +55,7 @@ public class frmReporte extends javax.swing.JFrame {
         btnCancelar = new javax.swing.JButton();
         btnPublicar = new javax.swing.JButton();
         cbxCalles = new javax.swing.JComboBox<>();
+        btnExplorar = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Black", 0, 48)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -114,7 +114,7 @@ public class frmReporte extends javax.swing.JFrame {
                 btnCancelarActionPerformed(evt);
             }
         });
-        jPanel2.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(53, 437, 215, -1));
+        jPanel2.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 430, 160, -1));
 
         btnPublicar.setBackground(new java.awt.Color(51, 51, 255));
         btnPublicar.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
@@ -125,7 +125,7 @@ public class frmReporte extends javax.swing.JFrame {
                 btnPublicarActionPerformed(evt);
             }
         });
-        jPanel2.add(btnPublicar, new org.netbeans.lib.awtextra.AbsoluteConstraints(465, 438, 215, -1));
+        jPanel2.add(btnPublicar, new org.netbeans.lib.awtextra.AbsoluteConstraints(525, 430, 180, -1));
 
         cbxCalles.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Guerrero", "Miguel Aleman", "Kino", "200" }));
         cbxCalles.addActionListener(new java.awt.event.ActionListener() {
@@ -134,6 +134,17 @@ public class frmReporte extends javax.swing.JFrame {
             }
         });
         jPanel2.add(cbxCalles, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 150, 310, 40));
+
+        btnExplorar.setBackground(new java.awt.Color(51, 51, 255));
+        btnExplorar.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
+        btnExplorar.setForeground(new java.awt.Color(255, 255, 255));
+        btnExplorar.setText("Explorar");
+        btnExplorar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExplorarActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnExplorar, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 430, 160, -1));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -182,10 +193,8 @@ public class frmReporte extends javax.swing.JFrame {
     private void btnPublicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPublicarActionPerformed
         // TODO add your handling code here:
         try{
-            reporteNegocio = new ReporteNegocio(entityManager);
             ReporteDTO reporteDTO = new ReporteDTO(txtTitulo.getText(), cbxCalles.getSelectedItem().toString(), txtDescripcion.getText(), frmInicioSesion.usuarioSesion);
             reporteNegocio.validarCampos(reporteDTO);
-            frmNavegacion.reportes.add(reporteDTO.toString());
             JOptionPane.showMessageDialog(this, "Reporte publicado");
             frmNavegacion frmNavegacion = new frmNavegacion(entityManager);
             frmNavegacion.setVisible(true);
@@ -202,9 +211,15 @@ public class frmReporte extends javax.swing.JFrame {
     private void txtTituloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTituloActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtTituloActionPerformed
+
+    private void btnExplorarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExplorarActionPerformed
+        // TODO add your handling code here:
+        frmExplorar frmExplorar = new frmExplorar(entityManager);
+        frmExplorar.setVisible(true);
+    }//GEN-LAST:event_btnExplorarActionPerformed
     
     public void llenarComboBox(){
-        overPass = new OverPassCalles();
+        reporteNegocio = new ReporteNegocio(entityManager);
         double[] coordenadas = {27.4826, -109.9516, 27.5126, -109.9216};
         
         // Limpiar el comboBox antes de llenarlo
@@ -212,19 +227,19 @@ public class frmReporte extends javax.swing.JFrame {
         
         try{
             //Guardar las calles en un arreglo
-            String[] calles = overPass.obtenerCalles(coordenadas);
+            String[] calles = reporteNegocio.obtenerCalles(coordenadas);
             
             //Guardar las calles obtenidas en la comboBox
             if (calles != null) {
-                System.out.println("Calles de hermosillo:");
+                System.out.println("Calles de Ciudad Obregón:");
                 for (String calle : calles) {
                     cbxCalles.addItem(calle);
                 }
             } else {
                 System.out.println("No se pudieron obtener las calles.");
             }
-        } catch (IOException | InterruptedException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage());
+        } catch (NegocioException ne) {
+            JOptionPane.showMessageDialog(this, ne.getMessage());
         }
     }
     /**
@@ -264,6 +279,7 @@ public class frmReporte extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnExplorar;
     private javax.swing.JButton btnPublicar;
     private javax.swing.JComboBox<String> cbxCalles;
     private javax.swing.JLabel jLabel1;

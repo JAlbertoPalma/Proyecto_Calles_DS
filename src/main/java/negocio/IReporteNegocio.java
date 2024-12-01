@@ -16,5 +16,9 @@ public interface IReporteNegocio {
     
     public List<ReporteDTO> obtenerReportes() throws NegocioException;
     
+    public List<ReporteDTO> obtenerReportesPorCalle(String filtroCalle) throws NegocioException;
+    
     public int likearReporte(ReporteDTO reporteDTO, boolean like) throws NegocioException;
+    
+    public String[] obtenerCalles(double[] coordenadas) throws NegocioException;
 }

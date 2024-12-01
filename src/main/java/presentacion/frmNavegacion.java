@@ -9,15 +9,19 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.persistence.EntityManager;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import negocio.IReporteNegocio;
 import negocio.NegocioException;
 import negocio.ReporteNegocio;
@@ -29,7 +33,10 @@ import negocio.ReporteNegocio;
 public class frmNavegacion extends javax.swing.JFrame {
     private static EntityManager entityManager;
     private IReporteNegocio reporteNegocio;
-    static List<String> reportes = new ArrayList();
+    private DefaultComboBoxModel<String> comboBoxModel;
+    private String calleAnterior = null;
+    private SwingWorker<Void, Void> worker = null;
+    private boolean isWorkerRunning = false;
     /**
      * Creates new form frmNavegacion
      * @param entityManager
@@ -37,7 +44,17 @@ public class frmNavegacion extends javax.swing.JFrame {
     public frmNavegacion(EntityManager entityManager) {
         initComponents();
         this.entityManager = entityManager;
-        llenarPaneles();
+        this.reporteNegocio = new ReporteNegocio(entityManager);
+
+        // Inicializar el modelo del comboBox
+        comboBoxModel = new DefaultComboBoxModel<>();
+        cbxFiltroCalle.setModel(comboBoxModel);
+
+        // Llenar los paneles al inicio
+        llenarPaneles(null);
+
+        // Configurar el listener del comboBox de manera eficiente
+        configurarListenerComboBox();
     }
 
     /**
@@ -54,9 +71,10 @@ public class frmNavegacion extends javax.swing.JFrame {
         pnl2 = new javax.swing.JPanel();
         scrPanel = new javax.swing.JScrollPane();
         pnlPrincipal = new javax.swing.JPanel();
-        btnOpcionReporte1 = new javax.swing.JButton();
+        brnCerrarSesion = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         btnOpcionReporte = new javax.swing.JButton();
+        cbxFiltroCalle = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(850, 500));
@@ -77,7 +95,7 @@ public class frmNavegacion extends javax.swing.JFrame {
         pnlPrincipal.setLayout(pnlPrincipalLayout);
         pnlPrincipalLayout.setHorizontalGroup(
             pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
+            .addGap(0, 767, Short.MAX_VALUE)
         );
         pnlPrincipalLayout.setVerticalGroup(
             pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -86,10 +104,10 @@ public class frmNavegacion extends javax.swing.JFrame {
 
         scrPanel.setViewportView(pnlPrincipal);
 
-        btnOpcionReporte1.setText("Cerrar sesión");
-        btnOpcionReporte1.addActionListener(new java.awt.event.ActionListener() {
+        brnCerrarSesion.setText("Cerrar sesión");
+        brnCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOpcionReporte1ActionPerformed(evt);
+                brnCerrarSesionActionPerformed(evt);
             }
         });
 
@@ -104,32 +122,39 @@ public class frmNavegacion extends javax.swing.JFrame {
             }
         });
 
+        cbxFiltroCalle.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout pnl2Layout = new javax.swing.GroupLayout(pnl2);
         pnl2.setLayout(pnl2Layout);
         pnl2Layout.setHorizontalGroup(
             pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(scrPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
-                .addContainerGap())
             .addGroup(pnl2Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(btnOpcionReporte1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(175, 175, 175)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnOpcionReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
+                .addContainerGap()
+                .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnl2Layout.createSequentialGroup()
+                        .addComponent(brnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(cbxFiltroCalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(95, 95, 95)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 192, Short.MAX_VALUE)
+                        .addComponent(btnOpcionReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24))
+                    .addGroup(pnl2Layout.createSequentialGroup()
+                        .addComponent(scrPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 779, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         pnl2Layout.setVerticalGroup(
             pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnOpcionReporte1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
+                    .addGroup(pnl2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(brnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbxFiltroCalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnOpcionReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addComponent(scrPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -141,7 +166,7 @@ public class frmNavegacion extends javax.swing.JFrame {
             .addGroup(pnl1Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(pnl2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnl1Layout.setVerticalGroup(
             pnl1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,14 +184,14 @@ public class frmNavegacion extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -181,65 +206,122 @@ public class frmNavegacion extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_btnOpcionReporteActionPerformed
 
-    private void btnOpcionReporte1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpcionReporte1ActionPerformed
+    private void brnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_brnCerrarSesionActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnOpcionReporte1ActionPerformed
+        frmInicioSesion frmInicioSesion = new frmInicioSesion(entityManager);
+        frmInicioSesion.setVisible(true);
+        dispose();
+    }//GEN-LAST:event_brnCerrarSesionActionPerformed
 
-    private void llenarPaneles(){
-        AtomicBoolean like = new AtomicBoolean(false);
-        reporteNegocio = new ReporteNegocio(entityManager);
-        List<ReporteDTO> reportesDTO = new ArrayList<>();
+    private void configurarListenerComboBox() {
+        cbxFiltroCalle.addActionListener(e -> {
+        // Deshabilitar el ComboBox para evitar cambios de filtro durante la carga
+        cbxFiltroCalle.setEnabled(false);
 
-        // Obtenemos los reportes
-        try {
-            reportesDTO = reporteNegocio.obtenerReportes();
-        } catch (NegocioException ne) {
-            JOptionPane.showMessageDialog(this, ne.getMessage());
+        String seleccion = (String) cbxFiltroCalle.getSelectedItem();
+        llenarPaneles("Todas las calles".equals(seleccion) ? null : seleccion);
+        });
+    }
+
+    private void llenarPaneles(String filtroCalle) {
+        if (isWorkerRunning) return; // Si ya hay un worker corriendo, no hacer nada
+        isWorkerRunning = true;
+
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            List<ReporteDTO> reportesDTO;
+            List<String> callesDisponibles;
+
+            @Override
+            protected Void doInBackground() throws Exception {
+                // Cargar datos en segundo plano
+                double[] coordenadas = {27.4826, -109.9516, 27.5126, -109.9216};
+                callesDisponibles = new ArrayList<>(Arrays.asList(reporteNegocio.obtenerCalles(coordenadas)));
+
+                reportesDTO = (filtroCalle == null || filtroCalle.isEmpty())
+                        ? reporteNegocio.obtenerReportes()
+                        : reporteNegocio.obtenerReportesPorCalle(filtroCalle);
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    get(); // Espera que el trabajo en segundo plano termine
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(frmNavegacion.this, "Error al cargar los datos.");
+                    return;
+                }
+
+                // Actualizar el ComboBox y los paneles en el hilo de la UI
+                SwingUtilities.invokeLater(() -> {
+                    // Actualizar el ComboBox
+                    actualizarComboBox(callesDisponibles);
+
+                    // Actualizar los paneles
+                    actualizarPaneles(reportesDTO);
+
+                    // Habilitar el ComboBox nuevamente
+                    cbxFiltroCalle.setEnabled(true);
+                    isWorkerRunning = false; // Marcar como no en ejecución
+                });
+            }
+        };
+        worker.execute();
+    }
+
+    private void actualizarComboBox(List<String> callesDisponibles) {
+        comboBoxModel.removeAllElements(); // Limpiar los elementos existentes
+        comboBoxModel.addElement("Todas las calles"); // Opción predeterminada
+        for (String calle : callesDisponibles) {
+            comboBoxModel.addElement(calle);
         }
+    }
 
-        // Limpiar pnlPrincipal antes de agregar nuevos componentes
-        pnlPrincipal.removeAll();
+    private void actualizarPaneles(List<ReporteDTO> reportesDTO) {
+        pnlPrincipal.removeAll(); // Limpiar los paneles anteriores
         pnlPrincipal.setLayout(new BoxLayout(pnlPrincipal, BoxLayout.Y_AXIS));
 
-        // Crear panel dinámico para cada reporte
         for (ReporteDTO reporteDTO : reportesDTO) {
-            JPanel panelReporte = new JPanel();
-            panelReporte.setBorder(BorderFactory.createTitledBorder(reporteDTO.getTitulo()));
-            panelReporte.setLayout(new GridLayout(4, 1)); // Cambiar a 4 filas si hay más componentes
-
-            JLabel lblFecha = new JLabel("Fecha: " + reporteDTO.getFecha());
-            JLabel lblCalle = new JLabel("Calle: " + reporteDTO.getCalle());
-            JLabel lblDescripcion = new JLabel("<html>" + reporteDTO.getDescripcion() + "</html>");
-            JLabel lblLikes = new JLabel("Likes: " + reporteDTO.getLikes());
-
-            JButton btnLike = new JButton("Like");
-            btnLike.addActionListener(e -> {
-                lblLikes.setText("Likes: " + incrementarLikes(reporteDTO, like.get()));
-                lblLikes.revalidate();
-                lblLikes.repaint();
-
-                like.set(!like.get());
-            });
-
-            // Agregar componentes al panel de cada reporte
-            panelReporte.add(lblFecha);
-            panelReporte.add(lblCalle);
-            panelReporte.add(lblDescripcion);
-
-            JPanel likePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            likePanel.add(lblLikes);
-            likePanel.add(btnLike);
-
-            panelReporte.add(likePanel);
+            JPanel panelReporte = crearPanelReporte(reporteDTO);
             pnlPrincipal.add(panelReporte);
         }
 
-        // Ajustar tamaño preferido de pnlPrincipal dinámicamente
+        // Ajustar el tamaño dinámicamente
         pnlPrincipal.setPreferredSize(new Dimension(scrPanel.getWidth(), reportesDTO.size() * 200));
+        pnlPrincipal.revalidate();
+        pnlPrincipal.repaint();
+    }
 
-        // Asegurarse de actualizar el JScrollPane
-        scrPanel.revalidate();
-        scrPanel.repaint();
+    private JPanel crearPanelReporte(ReporteDTO reporteDTO) {
+        AtomicBoolean like = new AtomicBoolean(false);
+        JPanel panelReporte = new JPanel();
+        panelReporte.setBorder(BorderFactory.createTitledBorder(reporteDTO.getTitulo()));
+        panelReporte.setLayout(new GridLayout(4, 1));
+
+        JLabel lblFecha = new JLabel("Fecha: " + reporteDTO.getFecha());
+        JLabel lblCalle = new JLabel("Calle: " + reporteDTO.getCalle());
+        JLabel lblDescripcion = new JLabel("<html>" + reporteDTO.getDescripcion() + "</html>");
+        JLabel lblLikes = new JLabel("Likes: " + reporteDTO.getLikes());
+
+        JButton btnLike = new JButton("Like");
+        btnLike.addActionListener(e -> {
+            lblLikes.setText("Likes: " + incrementarLikes(reporteDTO, like.get()));
+            lblLikes.revalidate();
+            lblLikes.repaint();
+            like.set(!like.get());
+        });
+
+        // Agregar componentes al panel
+        panelReporte.add(lblFecha);
+        panelReporte.add(lblCalle);
+        panelReporte.add(lblDescripcion);
+
+        JPanel likePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        likePanel.add(lblLikes);
+        likePanel.add(btnLike);
+
+        panelReporte.add(likePanel);
+        return panelReporte;
     }
     
     public int incrementarLikes(ReporteDTO reporteDTO, boolean like){
@@ -289,8 +371,9 @@ public class frmNavegacion extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton brnCerrarSesion;
     private javax.swing.JButton btnOpcionReporte;
-    private javax.swing.JButton btnOpcionReporte1;
+    private javax.swing.JComboBox<String> cbxFiltroCalle;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel pnl1;
@@ -299,12 +382,4 @@ public class frmNavegacion extends javax.swing.JFrame {
     private javax.swing.JScrollPane scrPanel;
     // End of variables declaration//GEN-END:variables
 
-//        if(!reportes.isEmpty()){
-//            // Agregar las cadenas al JTextArea, separadas por nuevas líneas
-//            StringBuilder sb = new StringBuilder();
-//            for (String cadena : reportes) {
-//                sb.append(cadena).append("\n");
-//            }
-//            textArea.setText(sb.toString());
-//        }
 }

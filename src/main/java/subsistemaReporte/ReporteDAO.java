@@ -39,8 +39,8 @@ public class ReporteDAO implements IReporteDAO{
 
             ReporteEntidad reporte = new ReporteEntidad(
                     reporteDTO.getTitulo(),
-                    reporteDTO.getDescripcion(),
                     reporteDTO.getCalle(),
+                    reporteDTO.getDescripcion(),
                     usuarioBuscado);
             usuarioBuscado.getReportes().add(reporte);
             entityManager.persist(reporte);
