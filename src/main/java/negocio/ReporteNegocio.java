@@ -5,7 +5,6 @@
 package negocio;
 
 import dto.ReporteDTO;
-import entidad.ReporteEntidad;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,32 +13,24 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import subsistemaReporte.IReporteDAO;
-import subsistemaUsuario.IUsuarioDAO;
 import subsistemaReporte.PersistenciaException;
 import subsistemaReporte.ReporteDAO;
-import subsistemaUsuario.UsuarioDAO;
 
 /**
  *
  * @author Beto_
  */
 public class ReporteNegocio implements IReporteNegocio{
-//    EntityManager entityManager;
     IReporteDAO reporteDAO;
     private ReporteCvr reporteCvr;
-//    IUsuarioDAO usuarioDAO;
 
     public ReporteNegocio(EntityManager entityManager) {
-//        this.entityManager = entityManager;
         reporteDAO = new ReporteDAO(entityManager);
         this.reporteCvr = new ReporteCvr();
-//        usuarioDAO = new UsuarioDAO(entityManager);
     }
 
     @Override
@@ -118,7 +109,7 @@ public class ReporteNegocio implements IReporteNegocio{
         // Endpoint de la API de Overpass
         String overpassUrl = "https://overpass-api.de/api/interpreter";
 
-        // Construye la consulta Overpass con las coordenadas
+        //Construímos una la consulta Overpass con las coordenadas
         String query = String.format("""
             [out:json];
             way["highway"](%f,%f,%f,%f);
@@ -127,7 +118,7 @@ public class ReporteNegocio implements IReporteNegocio{
             out skel qt;
         """, coordenadas[0], coordenadas[1], coordenadas[2], coordenadas[3]);
 
-        //Se configura la solicitud HTTP
+        //Configuramos la solicitud HTTP
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(overpassUrl))
@@ -135,17 +126,17 @@ public class ReporteNegocio implements IReporteNegocio{
                 .POST(HttpRequest.BodyPublishers.ofString("data=" + query))
                 .build();
 
-        //Se envía la solicitud y obtiene la respuesta
+        //Enviamos la solicitud y obtenemos la respuesta
         HttpResponse<String> response;
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                // Se procesa la respuesta que está en formato JSON
+                //Procesamos la respuesta que esta en formato JSON
                 JSONObject respuestaJSON = new JSONObject(response.body());
                 JSONArray elementos = respuestaJSON.getJSONArray("elements");
 
-                //Se extraen los nombres de las calles
+                //Extraemos los nombres de las calles
                 return elementos.toList().stream()
                         .filter(element -> element instanceof HashMap) // Asegura que sea un HashMap
                         .map(element -> (HashMap<String, Object>) element) // Castea el objeto
@@ -156,8 +147,7 @@ public class ReporteNegocio implements IReporteNegocio{
                         .distinct()
                         .toArray(String[]::new);
             } else {
-                System.err.println("Error al obtener los datos: " + response.statusCode());
-                return null;
+                throw new NegocioException("Error de infraestructura: No se pudieron obtener datos.");
             }
         } catch (IOException | InterruptedException ex) {
             throw new NegocioException("Error de infraestructura: " + ex.getMessage());

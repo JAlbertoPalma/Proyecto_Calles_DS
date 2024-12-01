@@ -5,22 +5,18 @@
 package presentacion;
 
 import dto.*;
-import java.awt.HeadlessException;
-import java.io.IOException;
-import java.util.Arrays;
 import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
-import negocio.IReporteNegocio;
+import negocio.FachadaReporte;
+import negocio.IFachadaReporte;
 import negocio.NegocioException;
-import negocio.ReporteNegocio;
-import negocio.UsuarioNegocio;
 
 /**
  *
  * @author Beto_  And Edgar
  */
 public class frmReporte extends javax.swing.JFrame {
-    private IReporteNegocio reporteNegocio;
+    private IFachadaReporte fachadaReporte;
     private static EntityManager entityManager;
     /**
      * Creates new form frmReporte
@@ -29,7 +25,7 @@ public class frmReporte extends javax.swing.JFrame {
     public frmReporte(EntityManager entityManager) {
         initComponents();
         this.entityManager = entityManager;
-        this.reporteNegocio = new ReporteNegocio(entityManager);
+        this.fachadaReporte = new FachadaReporte(entityManager);
         llenarComboBox();
     }
 
@@ -194,7 +190,7 @@ public class frmReporte extends javax.swing.JFrame {
         // TODO add your handling code here:
         try{
             ReporteDTO reporteDTO = new ReporteDTO(txtTitulo.getText(), cbxCalles.getSelectedItem().toString(), txtDescripcion.getText(), frmInicioSesion.usuarioSesion);
-            reporteNegocio.validarCampos(reporteDTO);
+            fachadaReporte.validarCampos(reporteDTO);
             JOptionPane.showMessageDialog(this, "Reporte publicado");
             frmNavegacion frmNavegacion = new frmNavegacion(entityManager);
             frmNavegacion.setVisible(true);
@@ -219,17 +215,12 @@ public class frmReporte extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExplorarActionPerformed
     
     public void llenarComboBox(){
-        reporteNegocio = new ReporteNegocio(entityManager);
         double[] coordenadas = {27.4826, -109.9516, 27.5126, -109.9216};
-        
-        // Limpiar el comboBox antes de llenarlo
         cbxCalles.removeAllItems();
         
         try{
-            //Guardar las calles en un arreglo
-            String[] calles = reporteNegocio.obtenerCalles(coordenadas);
+            String[] calles = fachadaReporte.obtenerCalles(coordenadas);
             
-            //Guardar las calles obtenidas en la comboBox
             if (calles != null) {
                 System.out.println("Calles de Ciudad Obregón:");
                 for (String calle : calles) {

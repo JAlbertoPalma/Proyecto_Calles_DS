@@ -6,16 +6,16 @@ package presentacion;
 
 import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
-import negocio.IReporteNegocio;
+import negocio.FachadaReporte;
+import negocio.IFachadaReporte;
 import negocio.NegocioException;
-import negocio.ReporteNegocio;
 
 /**
  *
  * @author Beto_
  */
 public class frmExplorar extends javax.swing.JFrame {
-    private IReporteNegocio reporteNegocio;
+    private IFachadaReporte fachadaReporte;
     private static EntityManager entityManager;
     
     /**
@@ -25,7 +25,7 @@ public class frmExplorar extends javax.swing.JFrame {
     public frmExplorar(EntityManager entityManager) {
         initComponents();
         this.entityManager = entityManager;
-        this.reporteNegocio = new ReporteNegocio(entityManager);
+        this.fachadaReporte = new FachadaReporte(entityManager);
     }
 
     /**
@@ -233,16 +233,14 @@ public class frmExplorar extends javax.swing.JFrame {
             coordenadas[1] = Double.parseDouble(txfLongitudMin.getText());
             coordenadas[2] = Double.parseDouble(txfLatitudMax.getText());
             coordenadas[3] = Double.parseDouble(txfLongitudMin.getText());
-            calles = reporteNegocio.obtenerCalles(coordenadas);
+            calles = fachadaReporte.obtenerCalles(coordenadas);
             
-            txaCallesEncontradas.setEditable(false);  // Hacer el TextArea no editable, si lo deseas
+            txaCallesEncontradas.setEditable(false);
 
-            // Limpiar el JTextArea antes de llenarlo con el arreglo
-            txaCallesEncontradas.setText("");  // Esto elimina cualquier texto previo
+            txaCallesEncontradas.setText("");
 
-            // Recorrer el arreglo y agregar cada elemento al JTextArea
             for (String calle : calles) {
-                txaCallesEncontradas.append(calle + "\n");  // Añadir el elemento con un salto de línea
+                txaCallesEncontradas.append(calle + "\n");
             }
         }catch(NumberFormatException  nfe){
             JOptionPane.showMessageDialog(this, "Verifique los datos ingresados. ");

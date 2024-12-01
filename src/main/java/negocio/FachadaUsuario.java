@@ -5,50 +5,31 @@
 package negocio;
 
 import dto.UsuarioDTO;
-import entidad.UsuarioEntidad;
-import java.util.List;
-import subsistemaReporte.PersistenciaException;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author Beto_
  */
 public class FachadaUsuario implements IFachadaUsuario{
-    
+    IUsuarioNegocio usuarioNegocio;
 
-    @Override
-    public void guardar(UsuarioDTO usuarioDTO) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public FachadaUsuario(EntityManager entityManager) {
+        usuarioNegocio = new UsuarioNegocio(entityManager);
     }
 
     @Override
-    public void actualizar(Long id, UsuarioDTO usuarioDTO) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void validarRegistro(UsuarioDTO usuarioDTO) throws NegocioException {
+        usuarioNegocio.validarRegistro(usuarioDTO);
     }
 
     @Override
-    public void actualizarEntidad(UsuarioEntidad usuarioEntidad) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void iniciaSesion(UsuarioDTO usuarioDTO) throws NegocioException {
+        usuarioNegocio.iniciaSesion(usuarioDTO);
     }
 
     @Override
-    public void eliminar(Long id) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public UsuarioDTO obtenerUsuarioSesion(String alias) throws NegocioException {
+        return usuarioNegocio.obtenerUsuarioSesion(alias);
     }
-
-    @Override
-    public UsuarioEntidad obtenerPorId(Long id) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public UsuarioEntidad obtenerPorAlias(String alias) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public List<UsuarioEntidad> obtenerUsuarios() throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
 }

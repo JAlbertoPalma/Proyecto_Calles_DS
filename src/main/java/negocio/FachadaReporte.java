@@ -5,43 +5,44 @@
 package negocio;
 
 import dto.ReporteDTO;
-import entidad.ReporteEntidad;
 import java.util.List;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author Beto_
  */
 public class FachadaReporte implements IFachadaReporte{
-
+    IReporteNegocio reporteNegocio;    
+    
+    public FachadaReporte(EntityManager entityManager) {
+        reporteNegocio = new ReporteNegocio(entityManager);
+    }
+    
     @Override
-    public void guardar(ReporteDTO reporteDTO, Long id_usuario) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void validarCampos(ReporteDTO reporteDTO) throws NegocioException {
+        reporteNegocio.validarCampos(reporteDTO);
     }
 
     @Override
-    public void actualizar(Long id, ReporteDTO reporteDTO) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public List<ReporteDTO> obtenerReportes() throws NegocioException {
+        return reporteNegocio.obtenerReportes();
     }
 
     @Override
-    public void actualizarEntidad(ReporteEntidad reporteEntidad) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public List<ReporteDTO> obtenerReportesPorCalle(String filtroCalle) throws NegocioException {
+        return reporteNegocio.obtenerReportesPorCalle(filtroCalle);
     }
 
     @Override
-    public void eliminar(Long id) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public int likearReporte(ReporteDTO reporteDTO, boolean like) throws NegocioException {
+        return reporteNegocio.likearReporte(reporteDTO, like);
     }
 
     @Override
-    public ReporteEntidad obtenerPorId(Long id) throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public String[] obtenerCalles(double[] coordenadas) throws NegocioException {
+        return reporteNegocio.obtenerCalles(coordenadas);
     }
-
-    @Override
-    public List<ReporteEntidad> obtenerReportes() throws NegocioException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
     
 }

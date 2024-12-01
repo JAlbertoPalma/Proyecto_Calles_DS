@@ -16,12 +16,10 @@ import subsistemaUsuario.UsuarioDAO;
  * @author Beto_
  */
 public class UsuarioNegocio implements IUsuarioNegocio{
-    private EntityManager entityManager;
     private UsuarioCvr usuarioCvr;
     private IUsuarioDAO usuarioDAO;
 
     public UsuarioNegocio(EntityManager entityManager) {
-        this.entityManager = entityManager;
         this.usuarioCvr = new UsuarioCvr();
         this.usuarioDAO = new UsuarioDAO(entityManager);
     }

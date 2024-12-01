@@ -45,7 +45,6 @@ presentacion\frmExplorar$6.class
 subsistemaUsuario\IUsuarioDAO.class
 negocio\NegocioException.class
 com\mycompany\callesproject\CallesProject.class
-presentacion\MapApp.class
 presentacion\frmExplorar$3.class
 presentacion\frmReporte$5.class
 presentacion\frmInicioSesion$3.class

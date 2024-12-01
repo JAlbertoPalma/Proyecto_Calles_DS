@@ -8,16 +8,16 @@ import dto.UsuarioDTO;
 import java.util.Arrays;
 import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
-import negocio.IUsuarioNegocio;
+import negocio.FachadaUsuario;
+import negocio.IFachadaUsuario;
 import negocio.NegocioException;
-import negocio.UsuarioNegocio;
 
 /**
  *
  * @author Beto_ and edgar
  */
 public class frmRegistro extends javax.swing.JFrame {
-    private IUsuarioNegocio usuarioNegocio;
+    private IFachadaUsuario fachadaUsuario;
     private static EntityManager entityManager;
     /**
      * Creates new form frmRegistro
@@ -26,6 +26,7 @@ public class frmRegistro extends javax.swing.JFrame {
     public frmRegistro(EntityManager entityManager) {
         initComponents();
         this.entityManager = entityManager;
+        fachadaUsuario = new FachadaUsuario(entityManager);
     }
 
     /**
@@ -187,7 +188,6 @@ public class frmRegistro extends javax.swing.JFrame {
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         // TODO add your handling code here:
         try{
-            usuarioNegocio = new UsuarioNegocio(entityManager);
             char[] passwordChars = pswContraseña.getPassword();
             String contrasena = String.valueOf(passwordChars);
             
@@ -195,7 +195,7 @@ public class frmRegistro extends javax.swing.JFrame {
             Arrays.fill(passwordChars, '\u0000');
             
             UsuarioDTO usuarioDTO = new UsuarioDTO(txtAlias.getText(), contrasena);
-            usuarioNegocio.validarRegistro(usuarioDTO);
+            fachadaUsuario.validarRegistro(usuarioDTO);
             JOptionPane.showMessageDialog(this, "Usuario registrado");
             dispose();
         }catch(NegocioException ne){

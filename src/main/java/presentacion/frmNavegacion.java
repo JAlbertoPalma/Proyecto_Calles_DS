@@ -22,6 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import negocio.FachadaReporte;
+import negocio.IFachadaReporte;
 import negocio.IReporteNegocio;
 import negocio.NegocioException;
 import negocio.ReporteNegocio;
@@ -32,7 +34,7 @@ import negocio.ReporteNegocio;
  */
 public class frmNavegacion extends javax.swing.JFrame {
     private static EntityManager entityManager;
-    private IReporteNegocio reporteNegocio;
+    private IFachadaReporte fachadaReporte;
     private DefaultComboBoxModel<String> comboBoxModel;
     private String calleAnterior = null;
     private SwingWorker<Void, Void> worker = null;
@@ -44,16 +46,13 @@ public class frmNavegacion extends javax.swing.JFrame {
     public frmNavegacion(EntityManager entityManager) {
         initComponents();
         this.entityManager = entityManager;
-        this.reporteNegocio = new ReporteNegocio(entityManager);
+        this.fachadaReporte = new FachadaReporte(entityManager);
 
-        // Inicializar el modelo del comboBox
         comboBoxModel = new DefaultComboBoxModel<>();
         cbxFiltroCalle.setModel(comboBoxModel);
 
-        // Llenar los paneles al inicio
         llenarPaneles(null);
 
-        // Configurar el listener del comboBox de manera eficiente
         configurarListenerComboBox();
     }
 
@@ -215,7 +214,6 @@ public class frmNavegacion extends javax.swing.JFrame {
 
     private void configurarListenerComboBox() {
         cbxFiltroCalle.addActionListener(e -> {
-        // Deshabilitar el ComboBox para evitar cambios de filtro durante la carga
         cbxFiltroCalle.setEnabled(false);
 
         String seleccion = (String) cbxFiltroCalle.getSelectedItem();
@@ -224,7 +222,7 @@ public class frmNavegacion extends javax.swing.JFrame {
     }
 
     private void llenarPaneles(String filtroCalle) {
-        if (isWorkerRunning) return; // Si ya hay un worker corriendo, no hacer nada
+        if (isWorkerRunning) return;
         isWorkerRunning = true;
 
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
@@ -233,36 +231,30 @@ public class frmNavegacion extends javax.swing.JFrame {
 
             @Override
             protected Void doInBackground() throws Exception {
-                // Cargar datos en segundo plano
+                //Cargamos los datos en segundo plano
                 double[] coordenadas = {27.4826, -109.9516, 27.5126, -109.9216};
-                callesDisponibles = new ArrayList<>(Arrays.asList(reporteNegocio.obtenerCalles(coordenadas)));
+                callesDisponibles = new ArrayList<>(Arrays.asList(fachadaReporte.obtenerCalles(coordenadas)));
 
                 reportesDTO = (filtroCalle == null || filtroCalle.isEmpty())
-                        ? reporteNegocio.obtenerReportes()
-                        : reporteNegocio.obtenerReportesPorCalle(filtroCalle);
+                        ? fachadaReporte.obtenerReportes()
+                        : fachadaReporte.obtenerReportesPorCalle(filtroCalle);
                 return null;
             }
 
             @Override
             protected void done() {
                 try {
-                    get(); // Espera que el trabajo en segundo plano termine
+                    get();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(frmNavegacion.this, "Error al cargar los datos.");
                     return;
                 }
 
-                // Actualizar el ComboBox y los paneles en el hilo de la UI
                 SwingUtilities.invokeLater(() -> {
-                    // Actualizar el ComboBox
                     actualizarComboBox(callesDisponibles);
-
-                    // Actualizar los paneles
                     actualizarPaneles(reportesDTO);
-
-                    // Habilitar el ComboBox nuevamente
                     cbxFiltroCalle.setEnabled(true);
-                    isWorkerRunning = false; // Marcar como no en ejecución
+                    isWorkerRunning = false;
                 });
             }
         };
@@ -270,15 +262,15 @@ public class frmNavegacion extends javax.swing.JFrame {
     }
 
     private void actualizarComboBox(List<String> callesDisponibles) {
-        comboBoxModel.removeAllElements(); // Limpiar los elementos existentes
-        comboBoxModel.addElement("Todas las calles"); // Opción predeterminada
+        comboBoxModel.removeAllElements();
+        comboBoxModel.addElement("Todas las calles");
         for (String calle : callesDisponibles) {
             comboBoxModel.addElement(calle);
         }
     }
 
     private void actualizarPaneles(List<ReporteDTO> reportesDTO) {
-        pnlPrincipal.removeAll(); // Limpiar los paneles anteriores
+        pnlPrincipal.removeAll();
         pnlPrincipal.setLayout(new BoxLayout(pnlPrincipal, BoxLayout.Y_AXIS));
 
         for (ReporteDTO reporteDTO : reportesDTO) {
@@ -286,7 +278,7 @@ public class frmNavegacion extends javax.swing.JFrame {
             pnlPrincipal.add(panelReporte);
         }
 
-        // Ajustar el tamaño dinámicamente
+        // Ajustar el tamaño del panl a partir de los reportes extraidos de la bd
         pnlPrincipal.setPreferredSize(new Dimension(scrPanel.getWidth(), reportesDTO.size() * 200));
         pnlPrincipal.revalidate();
         pnlPrincipal.repaint();
@@ -311,7 +303,6 @@ public class frmNavegacion extends javax.swing.JFrame {
             like.set(!like.get());
         });
 
-        // Agregar componentes al panel
         panelReporte.add(lblFecha);
         panelReporte.add(lblCalle);
         panelReporte.add(lblDescripcion);
@@ -324,11 +315,9 @@ public class frmNavegacion extends javax.swing.JFrame {
         return panelReporte;
     }
     
-    public int incrementarLikes(ReporteDTO reporteDTO, boolean like){
-        reporteNegocio = new ReporteNegocio(entityManager);
-        
+    public int incrementarLikes(ReporteDTO reporteDTO, boolean like){        
         try{
-            return reporteNegocio.likearReporte(reporteDTO, like);
+            return fachadaReporte.likearReporte(reporteDTO, like);
         }catch(NegocioException ne){
             JOptionPane.showMessageDialog(this, "Error");
         }

@@ -5,7 +5,6 @@
 package negocio;
 
 import dto.ReporteDTO;
-import entidad.ReporteEntidad;
 import java.util.List;
 
 /**
@@ -13,15 +12,13 @@ import java.util.List;
  * @author Beto_
  */
 public interface IFachadaReporte {
-    public void guardar(ReporteDTO reporteDTO, Long id_usuario) throws NegocioException;
+    public void validarCampos(ReporteDTO reporteDTO) throws NegocioException;
     
-    public void actualizar(Long id, ReporteDTO reporteDTO) throws NegocioException;
+    public List<ReporteDTO> obtenerReportes() throws NegocioException;
     
-    public void actualizarEntidad(ReporteEntidad reporteEntidad) throws NegocioException;
+    public List<ReporteDTO> obtenerReportesPorCalle(String filtroCalle) throws NegocioException;
     
-    public void eliminar(Long id) throws NegocioException;
+    public int likearReporte(ReporteDTO reporteDTO, boolean like) throws NegocioException;
     
-    public ReporteEntidad obtenerPorId(Long id) throws NegocioException;
-    
-    public List<ReporteEntidad> obtenerReportes() throws NegocioException;
+    public String[] obtenerCalles(double[] coordenadas) throws NegocioException;
 }

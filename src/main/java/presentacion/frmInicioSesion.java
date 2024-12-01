@@ -8,9 +8,9 @@ import dto.UsuarioDTO;
 import java.util.Arrays;
 import javax.persistence.EntityManager;
 import javax.swing.JOptionPane;
-import negocio.IUsuarioNegocio;
+import negocio.FachadaUsuario;
+import negocio.IFachadaUsuario;
 import negocio.NegocioException;
-import negocio.UsuarioNegocio;
 
 /**
  *
@@ -18,7 +18,7 @@ import negocio.UsuarioNegocio;
  */
 public class frmInicioSesion extends javax.swing.JFrame {
     private static EntityManager entityManager;
-    private IUsuarioNegocio usuarioNegocio;
+    private IFachadaUsuario fachadaUsuario;
     private UsuarioDTO usuarioDTO;
     static UsuarioDTO usuarioSesion;
     
@@ -30,6 +30,7 @@ public class frmInicioSesion extends javax.swing.JFrame {
         initComponents();
         usuarioSesion = null;
         this.entityManager = entityManager;
+        fachadaUsuario = new FachadaUsuario(entityManager);
     }
 
     /**
@@ -208,7 +209,6 @@ public class frmInicioSesion extends javax.swing.JFrame {
 
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
         // TODO add your handling code here:
-        usuarioNegocio = new UsuarioNegocio(entityManager);
         char[] passwordChars = pswContrasena.getPassword();
             String contrasena = String.valueOf(passwordChars);
             
@@ -216,8 +216,8 @@ public class frmInicioSesion extends javax.swing.JFrame {
             Arrays.fill(passwordChars, '\u0000');
         usuarioDTO = new UsuarioDTO(txtAlias.getText(), contrasena);
         try{
-            usuarioNegocio.iniciaSesion(usuarioDTO);
-            usuarioSesion = usuarioNegocio.obtenerUsuarioSesion(txtAlias.getText());
+            fachadaUsuario.iniciaSesion(usuarioDTO);
+            usuarioSesion = fachadaUsuario.obtenerUsuarioSesion(txtAlias.getText());
             frmNavegacion frmNavegacion = new frmNavegacion(entityManager);
             dispose();
             frmNavegacion.setVisible(true);
